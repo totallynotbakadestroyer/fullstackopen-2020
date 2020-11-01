@@ -1,3 +1,11 @@
+const Statistic = ({ text, value }) => {
+  return (
+    <p>
+      {text} {value}
+    </p>
+  );
+};
+
 const Statistics = ({ good, neutral, bad }) => {
   const getAll = () => {
     return good + neutral + bad;
@@ -8,23 +16,23 @@ const Statistics = ({ good, neutral, bad }) => {
   };
 
   const getPositivePercent = () => {
-    return (100 * good) / getAll();
+    return `${(100 * good) / getAll()} %`;
   };
-  if(getAll() === 0) {
+  if (getAll() === 0) {
     return (
       <div>
         <p>No feedback given</p>
       </div>
-    )
+    );
   }
   return (
     <div>
-      <p>good {good}</p>
-      <p>neutral {neutral}</p>
-      <p>bad {bad}</p>
-      <p>all {getAll()}</p>
-      <p>average {getAverage()}</p>
-      <p>positive {getPositivePercent()} %</p>
+      <Statistic text={"good"} value={good} />
+      <Statistic text={"neutral"} value={neutral} />
+      <Statistic text={"bad"} value={bad} />
+      <Statistic text={"all"} value={getAll()} />
+      <Statistic text={"average"} value={getAverage()} />
+      <Statistic text={"positive"} value={getPositivePercent()} />
     </div>
   );
 };
