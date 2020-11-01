@@ -1,0 +1,6 @@
+[submodule "fullstackopen-0.4-0.6"]
+	path = part0
+	url = https://github.com/totallynotbakadestroyer/fullstackopen-0.4-0.6
+[submodule "course-info"]
+	path = part1/course-info
+	url = https://github.com/totallynotbakadestroyer/course-info
