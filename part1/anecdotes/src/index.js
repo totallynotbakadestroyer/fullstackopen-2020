@@ -1,12 +1,17 @@
 import React, { useState } from "react";
 import ReactDOM from "react-dom";
+import Anecdote from "./components/Anecdote.js";
 
-const App = (props) => {
+const App = () => {
   const [selected, setSelected] = useState(0);
   const [points, setPoints] = useState(new Array(anecdotes.length - 1).fill(0));
 
   const getRandom = () => {
     setSelected(Math.floor(Math.random() * Math.floor(anecdotes.length - 1)));
+  };
+
+  const getMax = () => {
+    return points.indexOf(Math.max(...points));
   };
 
   const vote = () => {
@@ -17,10 +22,16 @@ const App = (props) => {
 
   return (
     <div>
-      <div>{props.anecdotes[selected]}</div>
-      <p>has {points[selected]} votes</p>
-      <button onClick={() => vote()}>vote</button>
-      <button onClick={() => getRandom()}>next anecdote</button>
+      <div>
+        <h1>Anecdote of the day</h1>
+        <Anecdote anecdote={anecdotes[selected]} points={points[selected]} />
+        <button onClick={() => vote()}>vote</button>
+        <button onClick={() => getRandom()}>next anecdote</button>
+      </div>
+      <div>
+        <h1>Anecdote with most votes</h1>
+        <Anecdote anecdote={anecdotes[getMax()]} points={points[getMax()]} />
+      </div>
     </div>
   );
 };
