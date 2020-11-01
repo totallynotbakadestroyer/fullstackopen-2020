@@ -1,8 +1,13 @@
+import React from "react";
+
 const Statistic = ({ text, value }) => {
   return (
-    <p>
-      {text} {value}
-    </p>
+    <tbody>
+      <tr>
+        <td>{text}</td>
+        <td>{value}</td>
+      </tr>
+    </tbody>
   );
 };
 
@@ -26,14 +31,14 @@ const Statistics = ({ good, neutral, bad }) => {
     );
   }
   return (
-    <div>
+    <table>
       <Statistic text={"good"} value={good} />
       <Statistic text={"neutral"} value={neutral} />
       <Statistic text={"bad"} value={bad} />
       <Statistic text={"all"} value={getAll()} />
       <Statistic text={"average"} value={getAverage()} />
       <Statistic text={"positive"} value={getPositivePercent()} />
-    </div>
+    </table>
   );
 };
 
