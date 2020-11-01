@@ -7,7 +7,11 @@ const App = () => {
   const [points, setPoints] = useState(new Array(anecdotes.length - 1).fill(0));
 
   const getRandom = () => {
-    setSelected(Math.floor(Math.random() * Math.floor(anecdotes.length - 1)));
+    let random = Math.floor(Math.random() * Math.floor(anecdotes.length - 1));
+    while (random === selected) {
+      random = Math.floor(Math.random() * Math.floor(anecdotes.length - 1));
+    }
+    setSelected(random);
   };
 
   const getMax = () => {
