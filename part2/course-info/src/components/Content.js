@@ -8,12 +8,16 @@ const Part = ({ part }) => {
   );
 };
 
-const Content = (props) => {
+const Content = ({ parts }) => {
   return (
     <div>
-      <Part part={props.parts[0]} />
-      <Part part={props.parts[1]} />
-      <Part part={props.parts[2]} />
+      {parts.map((part) => {
+        return (
+          <div key={part.id}>
+            <Part part={part} />
+          </div>
+        );
+      })}
     </div>
   );
 };
