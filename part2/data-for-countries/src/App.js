@@ -24,13 +24,19 @@ const App = () => {
     setFilterRequest(event.target.value);
   };
 
+  const handleSelect = (countryName) => {
+    console.log(countryName);
+    setFilterRequest(countryName);
+  }
+
+
   return (
     <div>
       <label>
-        find countries{" "}
+        find countries
         <input value={filterRequest} onChange={handleFilterRequest} />
       </label>
-      <Results countriesToShow={countriesToShow} />
+      <Results countriesToShow={countriesToShow} handleSelect={handleSelect} />
     </div>
   );
 };

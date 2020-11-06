@@ -1,4 +1,5 @@
 import React from "react";
+import Weather from "./Weather.js";
 
 const Country = ({ country }) => {
   return (
@@ -21,11 +22,14 @@ const Country = ({ country }) => {
       <div>
         <img width={200} src={country.flag} alt={`${country.name} flag`} />
       </div>
+      <div>
+        <Weather countryName={country.name} />
+      </div>
     </div>
   );
 };
 
-const Results = ({ countriesToShow }) => {
+const Results = ({ countriesToShow, handleSelect }) => {
   switch (true) {
     case countriesToShow.length === 0:
       return <div>Nothing is found</div>;
@@ -33,7 +37,10 @@ const Results = ({ countriesToShow }) => {
       return (
         <div>
           {countriesToShow.map((x) => (
-            <div key={x.name}> {x.name} </div>
+            <div key={x.name}>
+              {x.name}
+              <button onClick={() => handleSelect(x.name)}>show</button>
+            </div>
           ))}
         </div>
       );
