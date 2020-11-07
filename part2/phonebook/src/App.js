@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import Filter from "./components/Filter.js";
-import PersonForm from "./components/PersonForm.js";
-import Persons from "./components/Persons.js";
-import axios from "axios";
+import Filter from "./components/Filter";
+import PersonForm from "./components/PersonForm";
+import Persons from "./components/Persons";
+import personsService from "./services/PersonsService";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -11,29 +11,54 @@ const App = () => {
   const [filterName, setFilterName] = useState("");
 
   const fetchPersons = () => {
-    axios.get("http://localhost:3001/persons").then((response) => {
-      setPersons(response.data);
-    });
+    personsService.getAll().then((response) => setPersons(response));
   };
-
-  useEffect(fetchPersons, []);
-
-  const personsToShow = filterName
-    ? persons.filter((person) =>
-        person.name.toLowerCase().startsWith(filterName.toLowerCase())
-      )
-    : persons;
 
   const addName = (event) => {
     event.preventDefault();
-    if (persons.some((e) => e.name === newName)) {
+    const person = { name: newName, number: newNumber };
+    if (persons.some((e) => e.name === newName && e.number === newNumber)) {
       alert(`${newName} is already added to phonebook`);
-      return;
+    } else if (persons.some((e) => e.name === newName)) {
+      updatePerson(persons.find((e) => e.name === newName).id, person);
+    } else {
+      setNewName("");
+      setNewNumber("");
+      personsService.newPerson(person).then((response) => {
+        setPersons(persons.concat(response));
+      });
     }
-    setPersons(persons.concat({ name: newName, number: newNumber }));
-    setNewName("");
-    setNewNumber("");
   };
+
+  const updatePerson = (id, person) => {
+    if (
+      window.confirm(
+        `${newName} is already added to phonebook, replace the old number with a new one?`
+      )
+    ) {
+      setNewName("");
+      setNewNumber("");
+      personsService.updatePerson(id, person).then((response) => {
+        const personsCopy = [...persons];
+        console.log(response);
+        personsCopy[
+          personsCopy.findIndex((e) => e.name === response.name)
+        ] = response;
+        console.log(personsCopy);
+        setPersons(personsCopy);
+      });
+    }
+  };
+
+  const deletePerson = (person) => {
+    if (window.confirm(`Delete ${person.name}?`)) {
+      personsService.deletePerson(person).then(() => {
+        setPersons(persons.filter((x) => x.id !== person.id));
+      });
+    }
+  };
+
+  useEffect(fetchPersons, []);
 
   const handleNameChange = (event) => {
     setNewName(event.target.value);
@@ -44,6 +69,12 @@ const App = () => {
   const handleFilterChange = (event) => {
     setFilterName(event.target.value);
   };
+
+  const personsToShow = filterName
+    ? persons.filter((person) =>
+        person.name.toLowerCase().startsWith(filterName.toLowerCase())
+      )
+    : persons;
 
   return (
     <div>
@@ -65,7 +96,7 @@ const App = () => {
         />
       </div>
       <h2>Numbers</h2>
-      <Persons personsToShow={personsToShow} />
+      <Persons deletePerson={deletePerson} personsToShow={personsToShow} />
     </div>
   );
 };
