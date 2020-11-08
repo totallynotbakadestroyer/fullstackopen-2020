@@ -4,3 +4,7 @@
 [submodule "part1/course-info"]
 	path = part1/course-info
 	url = https://github.com/totallynotbakadestroyer/course-info
+[submodule "part3/phonebook-backend"]
+	path = part3/phonebook-backend
+	url = https://github.com/totallynotbakadestroyer/phonebook-backend
+
