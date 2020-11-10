@@ -52,4 +52,11 @@ const initialBlogs = [
   },
 ];
 
-module.exports = { initialBlogs };
+const singleBlog = {
+  title: "TestBlog",
+  author: "TestBlog",
+  url: "TestBlog",
+  likes: 1,
+};
+
+module.exports = { initialBlogs, singleBlog };
