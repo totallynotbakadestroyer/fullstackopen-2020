@@ -6,40 +6,43 @@ const helper = require("./test_helper.js");
 
 const api = supertest(app);
 
-describe("/api/blogs", () => {
-  beforeEach(async () => {
-    await Blog.deleteMany({});
+beforeEach(async () => {
+  await Blog.deleteMany({});
 
-    const blogObjects = helper.initialBlogs.map((blog) => new Blog(blog));
-    const promiseArray = blogObjects.map((blog) => blog.save());
-    await Promise.all(promiseArray);
-  });
-  afterAll(() => {
-    mongoose.connection.close();
-  });
-  test("GET, blogs should be returned as json", async () => {
+  const blogObjects = helper.initialBlogs.map((blog) => new Blog(blog));
+  const promiseArray = blogObjects.map((blog) => blog.save());
+  await Promise.all(promiseArray);
+});
+afterAll(() => {
+  mongoose.connection.close();
+});
+
+describe("when there is initially some blogs saved", () => {
+  test("blogs should be returned as json", async () => {
     await api
       .get("/api/blogs")
       .expect(200)
       .expect("Content-Type", /application\/json/);
   });
-  test("GET, request should return all blogs", async () => {
+  test("request should return all blogs", async () => {
     const response = await api.get("/api/blogs");
     expect(response.body).toHaveLength(helper.initialBlogs.length);
   });
-  test("GET, returned blog should have 'id' property instead of '_id'", async () => {
+  test("returned blogs should have 'id' property instead of '_id'", async () => {
     const response = await api.get("/api/blogs");
-    expect(response.body[0].id).toBeDefined();
-    expect(response.body[0]._id).not.toBeDefined();
+    expect(response.body.every((x) => "id" in x && !("_id" in x))).toBeTruthy();
   });
-  test("POST, new blog is successfully added", async () => {
+});
+
+describe("addition of a new blog", () => {
+  test("succeeds with correct data", async () => {
     await api
       .post("/api/blogs")
       .send(helper.singleBlog)
       .expect(201)
       .expect("Content-Type", /application\/json/);
   });
-  test("POST, new blog is returned with json after creating", async () => {
+  test("creating new blog should return this blog", async () => {
     const result = await api.post("/api/blogs").send(helper.singleBlog);
     expect(result.body.author).toBe(helper.singleBlog.author);
     expect(result.body.title).toBe(helper.singleBlog.title);
@@ -47,22 +50,15 @@ describe("/api/blogs", () => {
     expect(result.body.likes).toBe(helper.singleBlog.likes);
     expect(result.body.id).toBeDefined();
   });
-  test("POST, GET should return all blogs including new one", async () => {
+  test("new blog should return with all previously added blogs", async () => {
     await api.post("/api/blogs").send(helper.singleBlog);
     const result = await api.get("/api/blogs");
     expect(result.body).toHaveLength(helper.initialBlogs.length + 1);
+    expect(result.body.map((blog) => blog.url)).toContain(
+      helper.singleBlog.url
+    );
   });
-  test("POST, returned object should have 'likes' property if blog saved without it", async () => {
-    const blogWithoutLikes = {
-      title: "TestBlog",
-      author: "TestBlog",
-      url: "TestBlog",
-    };
-    const result = await api.post("/api/blogs").send(blogWithoutLikes);
-    expect(result.body.likes).toBeDefined();
-    expect(result.body.likes).toBe(0);
-  });
-  test("POST, return error if title is missing", async () => {
+  test("should return error if title is missing", async () => {
     const blogWithoutTitle = {
       author: "TestBlog",
       url: "TestBlog",
@@ -74,7 +70,7 @@ describe("/api/blogs", () => {
       .expect(400)
       .expect("Content-Type", /application\/json/);
   });
-  test("POST, return error if url is missing", async () => {
+  test("should return error if url is missing", async () => {
     const blogWithoutUrl = {
       title: "TestBlog",
       author: "TestBlog",
@@ -85,5 +81,15 @@ describe("/api/blogs", () => {
       .send(blogWithoutUrl)
       .expect(400)
       .expect("Content-Type", /application\/json/);
+  });
+  test("returned object should have 'likes' property if blog saved without it", async () => {
+    const blogWithoutLikes = {
+      title: "TestBlog",
+      author: "TestBlog",
+      url: "TestBlog",
+    };
+    const result = await api.post("/api/blogs").send(blogWithoutLikes);
+    expect(result.body.likes).toBeDefined();
+    expect(result.body.likes).toBe(0);
   });
 });
