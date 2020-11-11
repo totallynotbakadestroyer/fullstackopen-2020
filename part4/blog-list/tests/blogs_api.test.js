@@ -93,3 +93,56 @@ describe("addition of a new blog", () => {
     expect(result.body.likes).toBe(0);
   });
 });
+describe("deletion of a blog", () => {
+  test("succeeds with 204 if id is valid", async () => {
+    const blogsInDb = await helper.blogsInDb();
+    const blogToDelete = blogsInDb[0];
+
+    await api.delete(`/api/blogs/${blogToDelete.id}`);
+
+    const blogsAfterDeletion = await helper.blogsInDb();
+    expect(blogsAfterDeletion).toHaveLength(helper.initialBlogs.length - 1);
+    expect(blogsAfterDeletion).not.toContain(blogToDelete);
+  });
+});
+describe("updating blog", () => {
+  test("data returned as json with 200", async () => {
+    const blogsInDb = await helper.blogsInDb();
+    blogsInDb[0].url = "testurl";
+    const blogToUpdate = blogsInDb[0];
+
+    await api
+      .put(`/api/blogs/${blogToUpdate.id}`)
+      .send(blogToUpdate)
+      .expect(200)
+      .expect("Content-Type", /application\/json/);
+  });
+  test("succeeds with correct data and id", async () => {
+    const blogsInDb = await helper.blogsInDb();
+    blogsInDb[0].url = "testurl";
+    const blogToUpdate = blogsInDb[0];
+
+    const result = await api
+      .put(`/api/blogs/${blogToUpdate.id}`)
+      .send(blogToUpdate);
+    const blogsAfterChange = await helper.blogsInDb();
+    expect(result.body).toEqual(blogToUpdate);
+    expect(blogsAfterChange.map((x) => x.url)).toContain(blogsInDb[0].url);
+  });
+  test("400 if id is wrong", async () => {
+    const blogsInDb = await helper.blogsInDb();
+    const blogToUpdate = blogsInDb[0];
+
+    await api.put("/api/blogs/wrongId").send(blogToUpdate).expect(400);
+  });
+  test("400 if data is wrong", async () => {
+    const blogsInDb = await helper.blogsInDb();
+    blogsInDb[0].url = "";
+    const blogToUpdate = blogsInDb[0];
+
+    await api
+      .put(`/api/blogs/${blogToUpdate.id}`)
+      .send(blogToUpdate)
+      .expect(400);
+  });
+});

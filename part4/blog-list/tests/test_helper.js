@@ -1,3 +1,4 @@
+const Blog = require("../models/BlogSchema");
 const initialBlogs = [
   {
     _id: "5a422a851b54a676234d17f7",
@@ -59,4 +60,9 @@ const singleBlog = {
   likes: 1,
 };
 
-module.exports = { initialBlogs, singleBlog };
+const blogsInDb = async () => {
+  const notes = await Blog.find({});
+  return notes.map(note => note.toJSON());
+};
+
+module.exports = { initialBlogs, singleBlog, blogsInDb };
