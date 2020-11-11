@@ -6,6 +6,7 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 const logger = require("./utils/loggerSettings");
 const blogsController = require("./controllers/blogsController");
+const usersController = require("./controllers/usersController");
 const { errorHandler } = require("./utils/errorHandler");
 
 const mongoUri = config.MONGO_URI;
@@ -25,6 +26,7 @@ app.use(
   )
 );
 app.use("/api", blogsController);
+app.use("/api", usersController);
 app.use(errorHandler);
 
 module.exports = app;

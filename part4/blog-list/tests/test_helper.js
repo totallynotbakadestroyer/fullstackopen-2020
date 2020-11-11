@@ -1,4 +1,5 @@
 const Blog = require("../models/BlogSchema");
+const User = require("../models/UserSchema");
 const initialBlogs = [
   {
     _id: "5a422a851b54a676234d17f7",
@@ -54,15 +55,47 @@ const initialBlogs = [
 ];
 
 const singleBlog = {
+  "creator": "5fabd130fc615428b09801a5",
   title: "TestBlog",
   author: "TestBlog",
   url: "TestBlog",
   likes: 1,
 };
 
-const blogsInDb = async () => {
-  const notes = await Blog.find({});
-  return notes.map(note => note.toJSON());
+const initialUsers = [
+  {
+    name: "123",
+    username: "Test",
+    password: "YesMan",
+  },
+  {
+    name: "1234",
+    username: "AntiTest",
+    password: "YesMan",
+  },
+];
+
+const newUser = {
+  username: "newName",
+  name: "Lenin",
+  password: "testpassword",
 };
 
-module.exports = { initialBlogs, singleBlog, blogsInDb };
+const usersInDb = async () => {
+  const users = await User.find({});
+  return users.map((user) => user.toJSON());
+};
+
+const blogsInDb = async () => {
+  const notes = await Blog.find({});
+  return notes.map((note) => note.toJSON());
+};
+
+module.exports = {
+  initialBlogs,
+  singleBlog,
+  blogsInDb,
+  initialUsers,
+  usersInDb,
+  newUser,
+};

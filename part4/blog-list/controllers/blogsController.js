@@ -2,7 +2,7 @@ const blogsController = require("express").Router();
 const Blog = require("../models/BlogSchema");
 
 blogsController.get("/blogs", async (request, response) => {
-  const blogs = await Blog.find({});
+  const blogs = await Blog.find({}).populate("creator");
   response.json(blogs);
 });
 
@@ -18,8 +18,6 @@ blogsController.delete("/blogs/:id", async (request, response) => {
   response.status(204).end();
 });
 
-module.exports = blogsController;
-
 blogsController.put("/blogs/:id", async (request, response, next) => {
   const blog = await Blog.findByIdAndUpdate(request.params.id, request.body, {
     new: true,
@@ -31,3 +29,5 @@ blogsController.put("/blogs/:id", async (request, response, next) => {
     next({ name: "NotFound" });
   }
 });
+
+module.exports = blogsController;
