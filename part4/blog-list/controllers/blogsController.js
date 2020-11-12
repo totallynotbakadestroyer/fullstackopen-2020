@@ -16,7 +16,11 @@ blogsController.post("/blogs", jwtExpress, async (request, response) => {
 
 blogsController.delete("/blogs/:id", jwtExpress, async (request, response) => {
   const blog = await Blog.findById(request.params.id);
-  if (blog.creator.id === request.user.id) {
+  console.log(blog);
+  if(!blog) {
+    response.status(404).json({error: "not found"});
+  }
+  if (blog.creator.toString() === request.user.id) {
     await blog.delete();
   } else {
     return response.status(403).json({ error: "access is denied" });
