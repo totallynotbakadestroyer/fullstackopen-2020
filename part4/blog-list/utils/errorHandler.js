@@ -13,6 +13,9 @@ const errorHandler = (error, req, res, next) => {
   if (error.name === "NotFound") {
     return res.status(404).send({ error: "not found" });
   }
+  if (error.name === "UnauthorizedError") {
+    return res.status(401).send({ error: "authorization is required" });
+  }
 
   next(error);
 };

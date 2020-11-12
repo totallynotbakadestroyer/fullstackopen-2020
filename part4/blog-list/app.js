@@ -7,6 +7,7 @@ const mongoose = require("mongoose");
 const logger = require("./utils/loggerSettings");
 const blogsController = require("./controllers/blogsController");
 const usersController = require("./controllers/usersController");
+const loginController = require("./controllers/loginController");
 const { errorHandler } = require("./utils/errorHandler");
 
 const mongoUri = config.MONGO_URI;
@@ -25,8 +26,11 @@ app.use(
     ":method :url :status :res[content-length] - :response-time ms :req-body"
   )
 );
+
 app.use("/api", blogsController);
 app.use("/api", usersController);
+app.use("/api", loginController);
+
 app.use(errorHandler);
 
 module.exports = app;
