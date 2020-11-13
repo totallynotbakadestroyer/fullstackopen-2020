@@ -20,7 +20,7 @@ loginController.post("/login", async (req, res) => {
   };
   const token = jwt.sign(tokenPayload, process.env.SECRET);
 
-  res.status(200).header("Authorization", `Bearer ${token}`).send();
+  res.status(200).header("Authorization", `Bearer ${token}`).json({ token, username: user.username, name: user.name });
 });
 
 module.exports = loginController;
