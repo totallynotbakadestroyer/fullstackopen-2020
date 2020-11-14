@@ -35,7 +35,7 @@ blogsController.put(
     const blog = await Blog.findByIdAndUpdate(request.params.id, request.body, {
       new: true,
       runValidators: true,
-    });
+    }).populate("creator");
     if (blog) {
       response.json(blog);
     } else {
