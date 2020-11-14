@@ -9,9 +9,9 @@ blogsController.get("/blogs", async (request, response) => {
 
 blogsController.post("/blogs", jwtExpress, async (request, response) => {
   const blog = new Blog({ ...request.body, creator: request.user.id });
-  const result = await blog.save().populate("creator");
+  const result = await blog.save();
 
-  response.status(201).json(result);
+  response.status(201).json(await result.populate("creator").execPopulate());
 });
 
 blogsController.delete("/blogs/:id", jwtExpress, async (request, response) => {
