@@ -36,7 +36,6 @@ const App = () => {
       setPassword("");
       setUser(user);
       blogService.setToken(user.token);
-      localStorage.setItem("user", JSON.stringify(user));
     } catch (e) {
       generateNotification("Wrong credentials", "error");
       console.log(user);
