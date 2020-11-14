@@ -45,10 +45,25 @@ const App = () => {
     try {
       const newBlog = await blogService.create(blog);
       setBlogs(blogs.concat(newBlog));
-      generateNotification(`a new blog ${blog.title} by ${blog.author} added`, "success");
+      generateNotification(
+        `a new blog ${blog.title} by ${blog.author} added`,
+        "success"
+      );
     } catch (e) {
-      console.log(e.error)
+      console.log(e.error);
       generateNotification("Wrong blog info", "error");
+    }
+  };
+
+  const handleUpdate = async (blog) => {
+    try {
+      const updatedBlog = await blogService.update(blog);
+      const index = blogs.findIndex((x) => x.id === updatedBlog.id);
+      const blogsCopy = [...blogs];
+      blogsCopy[index] = updatedBlog;
+      setBlogs(blogsCopy);
+    } catch (e) {
+      console.log(e.error);
     }
   };
 
@@ -86,11 +101,9 @@ const App = () => {
         <p>
           {user.name} logged in <button onClick={handleLogout}>logout</button>
         </p>
-        <BlogForm
-          handleNewBlog={handleNewBlog}
-        />
+        <BlogForm handleNewBlog={handleNewBlog} />
       </div>
-      <Blogs blogs={blogs} />
+      <Blogs handleUpdate={handleUpdate} blogs={blogs} />
     </div>
   );
 };
