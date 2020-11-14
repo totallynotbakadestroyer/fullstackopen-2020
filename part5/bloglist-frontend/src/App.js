@@ -15,7 +15,9 @@ const App = () => {
   const [notification, setNotification] = useState(null);
 
   useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs));
+    blogService
+      .getAll()
+      .then((blogs) => setBlogs(blogs.sort((a, b) => b.likes - a.likes)));
   }, []);
 
   useEffect(() => {
@@ -67,6 +69,20 @@ const App = () => {
     }
   };
 
+  const handleDelete = async (blog) => {
+    try {
+      await blogService.deleteBlog(blog);
+      const blogsCopy = [...blogs];
+      blogsCopy.splice(
+        blogsCopy.findIndex((x) => blog.id === x.id),
+        1
+      );
+      setBlogs(blogsCopy);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   const handleLogout = () => {
     localStorage.removeItem("user");
     setUser(null);
@@ -103,7 +119,11 @@ const App = () => {
         </p>
         <BlogForm handleNewBlog={handleNewBlog} />
       </div>
-      <Blogs handleUpdate={handleUpdate} blogs={blogs} />
+      <Blogs
+        handleDelete={handleDelete}
+        handleUpdate={handleUpdate}
+        blogs={blogs}
+      />
     </div>
   );
 };

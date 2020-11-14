@@ -1,16 +1,16 @@
 import React, { useState } from "react";
 
-const Blogs = ({ blogs, handleUpdate }) => {
+const Blogs = ({ blogs, handleUpdate, handleDelete }) => {
   return (
     <div>
       {blogs.map((blog) => (
-        <Blog handleUpdate={handleUpdate} key={blog.id} blog={blog} />
+        <Blog handleDelete={handleDelete} handleUpdate={handleUpdate} key={blog.id} blog={blog} />
       ))}
     </div>
   );
 };
 
-const Blog = ({ blog, handleUpdate }) => {
+const Blog = ({ blog, handleUpdate, handleDelete }) => {
   const [visible, setVisible] = useState(false);
   const hideWhenVisible = { display: visible ? "none" : "" };
   const showWhenVisible = { display: visible ? "" : "none" };
@@ -28,6 +28,12 @@ const Blog = ({ blog, handleUpdate }) => {
     handleUpdate(blog);
   };
 
+  const deleteCurrent = () => {
+    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
+      handleDelete(blog);
+    }
+  }
+
   return (
     <div>
       <div style={hideWhenVisible}>
@@ -44,6 +50,9 @@ const Blog = ({ blog, handleUpdate }) => {
             likes {blog.likes} <button onClick={like}>like</button>
           </div>
           <div>{blog.author}</div>
+          {blog.creator.username === JSON.parse(localStorage.getItem("user")).username ? (
+            <button onClick={deleteCurrent}>delete</button>
+          ) : null}
         </div>
       </div>
     </div>
