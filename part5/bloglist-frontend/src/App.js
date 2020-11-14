@@ -13,9 +13,6 @@ const App = () => {
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
   const [notification, setNotification] = useState(null);
-  const [author, setBlogAuthor] = useState("");
-  const [title, setBlogTitle] = useState("");
-  const [url, setBlogUrl] = useState("");
 
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
@@ -44,15 +41,11 @@ const App = () => {
     }
   };
 
-  const handleNewBlog = async (event) => {
+  const handleNewBlog = async (blog) => {
     try {
-      event.preventDefault();
-      const newBlog = await blogService.create({ author, title, url });
+      const newBlog = await blogService.create(blog);
       setBlogs(blogs.concat(newBlog));
-      generateNotification(`a new blog ${title} by ${author} added`, "success");
-      setBlogUrl("");
-      setBlogTitle("");
-      setBlogAuthor("");
+      generateNotification(`a new blog ${blog.title} by ${blog.author} added`, "success");
     } catch (e) {
       console.log(e.error)
       generateNotification("Wrong blog info", "error");
@@ -94,12 +87,6 @@ const App = () => {
           {user.name} logged in <button onClick={handleLogout}>logout</button>
         </p>
         <BlogForm
-          title={title}
-          author={author}
-          url={url}
-          handleAuthor={({ target }) => setBlogAuthor(target.value)}
-          handleUrl={({ target }) => setBlogUrl(target.value)}
-          handleTitle={({ target }) => setBlogTitle(target.value)}
           handleNewBlog={handleNewBlog}
         />
       </div>
