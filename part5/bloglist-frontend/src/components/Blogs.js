@@ -40,7 +40,7 @@ const Blog = ({ blog, handleUpdate, handleDelete }) => {
   };
 
   return (
-    <div>
+    <div className="blog">
       <div style={hideWhenVisible}>
         <div style={blogStyle}>
           {blog.title} {blog.author}
