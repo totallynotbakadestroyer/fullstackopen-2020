@@ -31,6 +31,11 @@ app.use("/api", blogsController);
 app.use("/api", usersController);
 app.use("/api", loginController);
 
+if (process.env.NODE_ENV === "test") {
+  const testingController = require("./controllers/testController");
+  app.use("/api/testing", testingController); 
+}
+
 app.use(errorHandler);
 
 module.exports = app;
