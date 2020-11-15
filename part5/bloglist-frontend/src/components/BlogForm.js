@@ -20,11 +20,15 @@ const BlogForm = ({ handleNewBlog }) => {
   return (
     <div>
       <div style={hideWhenVisible}>
-        <button type="button" onClick={() => setVisible(true)}>
+        <button
+          className="toggleVisible"
+          type="button"
+          onClick={() => setVisible(true)}
+        >
           new blog
         </button>
       </div>
-      <div style={showWhenVisible}>
+      <div className="toggleableContent" style={showWhenVisible}>
         <h1>create new</h1>
         <form onSubmit={createBlog}>
           <div>
@@ -67,7 +71,7 @@ const BlogForm = ({ handleNewBlog }) => {
             <button type="submit">add new</button>
           </div>
         </form>
-        <button type="button" onClick={() => setVisible(false)}>
+        <button className="closeVisible" type="button" onClick={() => setVisible(false)}>
           close
         </button>
       </div>

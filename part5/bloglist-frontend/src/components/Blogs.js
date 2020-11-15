@@ -4,7 +4,12 @@ const Blogs = ({ blogs, handleUpdate, handleDelete }) => {
   return (
     <div>
       {blogs.map((blog) => (
-        <Blog handleDelete={handleDelete} handleUpdate={handleUpdate} key={blog.id} blog={blog} />
+        <Blog
+          handleDelete={handleDelete}
+          handleUpdate={handleUpdate}
+          key={blog.id}
+          blog={blog}
+        />
       ))}
     </div>
   );
@@ -32,25 +37,29 @@ const Blog = ({ blog, handleUpdate, handleDelete }) => {
     if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
       handleDelete(blog);
     }
-  }
+  };
 
   return (
     <div>
       <div style={hideWhenVisible}>
         <div style={blogStyle}>
           {blog.title} {blog.author}
-          <button onClick={() => setVisible(true)}>view</button>
+          <button className="toggleVisible" onClick={() => setVisible(true)}>
+            view
+          </button>
         </div>
       </div>
-      <div style={showWhenVisible}>
+      <div style={showWhenVisible} className="toggleableContent">
         <div style={blogStyle}>
           <div>{blog.title}</div>
           <div>{blog.url}</div>
-          <div>
-            likes {blog.likes} <button onClick={like}>like</button>
+          <div className="likesCount">
+            likes {blog.likes} <button className="toggleLike" onClick={like}>like</button>
           </div>
           <div>{blog.author}</div>
-          {blog.creator.username === JSON.parse(localStorage.getItem("user")).username ? (
+          {localStorage.getItem("user") &&
+          blog.creator.username ===
+            JSON.parse(localStorage.getItem("user")).username ? (
             <button onClick={deleteCurrent}>delete</button>
           ) : null}
         </div>
