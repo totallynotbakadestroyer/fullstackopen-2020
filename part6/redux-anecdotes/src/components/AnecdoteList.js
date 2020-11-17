@@ -1,8 +1,24 @@
 import React from "react";
-import {useDispatch, useSelector} from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  createNotification,
+  deleteNotification,
+} from "../reducers/notificationReducer.js";
 
 const AnecdoteList = () => {
-  const anecdotes = useSelector((state) => state);
+  const filter = useSelector((state) => state.filter);
+  const anecdotes = useSelector((state) => {
+    if (filter !== "") {
+      return state.anecdotes.filter((x) =>
+        x.content
+          .split(" ")
+          .some((word) => word.toLowerCase().startsWith(filter))
+      );
+    } else {
+      return state.anecdotes;
+    }
+  });
+  console.log(anecdotes);
   return (
     <div>
       {anecdotes.map((anecdote) => (
@@ -20,6 +36,10 @@ const Anecdote = ({ anecdote }) => {
       type: "VOTE",
       data: id,
     });
+    dispatch(createNotification(anecdote.content, "VOTE"));
+    setTimeout(() => {
+      dispatch(deleteNotification());
+    }, 5000);
   };
   return (
     <div>
