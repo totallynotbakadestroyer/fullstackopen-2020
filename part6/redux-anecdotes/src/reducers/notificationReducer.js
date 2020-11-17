@@ -13,11 +13,16 @@ const reducer = (state = {}, action) => {
   }
 };
 
-export const createNotification = (content, type) => {
+export const createNotification = (content, type, timeout) => {
   console.log(content);
-  return {
-    type: "NEW_NOTIFICATION",
-    data: { content, type },
+  return async (dispatch) => {
+    dispatch({
+      type: "NEW_NOTIFICATION",
+      data: { content, type },
+    });
+    setTimeout(() => {
+      dispatch(deleteNotification());
+    }, timeout * 1000);
   };
 };
 
