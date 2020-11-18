@@ -1,38 +1,23 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  createNotification,
-} from "../reducers/notificationReducer.js";
+import { connect } from "react-redux";
+import { createNotification } from "../reducers/notificationReducer.js";
 import { updateAnecdote } from "../reducers/anecdoteReducer";
 
-const AnecdoteList = () => {
-  const filter = useSelector((state) => state.filter);
-  const anecdotes = useSelector((state) => {
-    if (filter !== "") {
-      return state.anecdotes.filter((x) =>
-        x.content
-          .split(" ")
-          .some((word) => word.toLowerCase().startsWith(filter))
-      );
-    } else {
-      return state.anecdotes;
-    }
-  });
-  console.log(anecdotes);
+const AnecdoteList = (props) => {
+  console.log(props.anecdotes);
   return (
     <div>
-      {anecdotes.map((anecdote) => (
-        <Anecdote key={anecdote.id} anecdote={anecdote} />
+      {props.anecdotes.map((anecdote) => (
+        <Anecdote updateAnecdote={props.updateAnecdote} createNotification={props.createNotification} key={anecdote.id} anecdote={anecdote} />
       ))}
     </div>
   );
 };
 
-const Anecdote = ({ anecdote }) => {
-  const dispatch = useDispatch();
+const Anecdote = ({ anecdote, updateAnecdote, createNotification }) => {
   const vote = () => {
-    dispatch(updateAnecdote(anecdote));
-    dispatch(createNotification(anecdote.content, "NEW", 5));
+    updateAnecdote(anecdote);
+    createNotification(anecdote.content, "NEW", 5);
   };
   return (
     <div>
@@ -45,4 +30,24 @@ const Anecdote = ({ anecdote }) => {
   );
 };
 
-export default AnecdoteList;
+const mapStateToProps = (state) => {
+  if (state.filter !== "") {
+    return {
+      anecdotes: state.anecdotes.filter((x) =>
+        x.content
+          .split(" ")
+          .some((word) => word.toLowerCase().startsWith(state.filter))
+      ),
+    };
+  } else {
+    return { anecdotes: state.anecdotes };
+  }
+};
+
+const mapDispatchToProps = {
+  updateAnecdote,
+  createNotification,
+};
+
+const connectedAnecdotes = connect(mapStateToProps, mapDispatchToProps)(AnecdoteList);
+export default connectedAnecdotes;
