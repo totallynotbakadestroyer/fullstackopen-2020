@@ -36,7 +36,8 @@ const App = () => {
         <h2>blogs</h2>
         <Notification notification />
         <p>
-          {user.name} logged in <button onClick={() => dispatch(logout())}>logout</button>
+          {user.name} logged in{" "}
+          <button onClick={() => dispatch(logout())}>logout</button>
         </p>
         <BlogForm />
       </div>
