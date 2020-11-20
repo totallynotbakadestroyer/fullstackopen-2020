@@ -1,7 +1,7 @@
 import loginService from "../services/login";
 import { createNotification } from "./notificationReducer.js";
 
-const userReducer = (state = null, action) => {
+const authReducer = (state = null, action) => {
   switch (action.type) {
     case "LOGIN":
       return action.data;
@@ -30,13 +30,13 @@ export const logout = () => {
   };
 };
 
-export const initUser = () => {
+export const initAuth = () => {
   return (dispatch) => {
-    const user = localStorage.getItem("user");
+    const user = JSON.parse(localStorage.getItem("user"));
     if (user) {
       dispatch({ type: "LOGIN", data: user });
     }
   };
 };
 
-export default userReducer;
+export default authReducer;

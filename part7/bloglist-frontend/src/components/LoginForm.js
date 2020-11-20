@@ -1,5 +1,5 @@
 import React from "react";
-import { login } from "../reducers/userReducer.js";
+import { login } from "../reducers/authReducer.js";
 import { useDispatch } from "react-redux";
 
 const LoginForm = () => {
