@@ -34,9 +34,9 @@ export const logout = () => {
 export const initAuth = () => {
   return (dispatch) => {
     const user = JSON.parse(localStorage.getItem("user"));
-    blogService.setToken(user.token);
     if (user) {
       dispatch({ type: "LOGIN", data: user });
+      blogService.setToken(user.token);
     }
   };
 };
