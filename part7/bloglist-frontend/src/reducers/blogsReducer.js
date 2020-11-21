@@ -48,9 +48,15 @@ export const deleteBlog = (blog) => {
   };
 };
 
-export const updateBlog = (blog) => {
+export const updateBlog = (blog, comment) => {
   return async (dispatch) => {
-    const blogObject = await blogsService.update(blog);
+    let blogObject;
+    if(!comment) {
+      blogObject = await blogsService.update(blog);
+    }
+    else {
+      blogObject = await blogsService.comment(blog, comment);
+    }
     dispatch({ type: "UPDATE_BLOG", data: blogObject });
   };
 };

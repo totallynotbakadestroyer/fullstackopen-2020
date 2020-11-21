@@ -1,5 +1,6 @@
 import loginService from "../services/login";
 import { createNotification } from "./notificationReducer.js";
+import blogService from "../services/blogs.js";
 
 const authReducer = (state = null, action) => {
   switch (action.type) {
@@ -33,6 +34,7 @@ export const logout = () => {
 export const initAuth = () => {
   return (dispatch) => {
     const user = JSON.parse(localStorage.getItem("user"));
+    blogService.setToken(user.token);
     if (user) {
       dispatch({ type: "LOGIN", data: user });
     }

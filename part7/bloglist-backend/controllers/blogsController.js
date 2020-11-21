@@ -2,6 +2,7 @@ const blogsController = require("express").Router();
 const Blog = require("../models/BlogSchema");
 const jwtExpress = require("../utils/jwtExpressSettings");
 const User = require("../models/UserSchema");
+const textParser = require("body-parser").text();
 
 blogsController.get("/blogs", async (request, response) => {
   const blogs = await Blog.find({}).populate("creator");
@@ -45,6 +46,21 @@ blogsController.put(
     } else {
       next({ name: "NotFound" });
     }
+  }
+);
+
+blogsController.post(
+  "/blogs/:id/comments",
+  jwtExpress,
+  textParser,
+  async (request, response) => {
+    if (!request.body) {
+      return response.status(400).json({ error: "comment cannot be empty" });
+    }
+    const blog = await Blog.findById(request.params.id);
+    blog.comments = blog.comments.concat(request.body);
+    await blog.save();
+    response.json(blog);
   }
 );
 

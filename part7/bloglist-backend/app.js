@@ -9,6 +9,7 @@ const blogsController = require("./controllers/blogsController");
 const usersController = require("./controllers/usersController");
 const loginController = require("./controllers/loginController");
 const { errorHandler } = require("./utils/errorHandler");
+const bodyParser = require("body-parser");
 
 const mongoUri = config.MONGO_URI;
 
@@ -20,7 +21,7 @@ mongoose.connect(mongoUri, {
 });
 
 app.use(cors());
-app.use(express.json());
+app.use(bodyParser.json());
 app.use(
   logger(
     ":method :url :status :res[content-length] - :response-time ms :req-body"
@@ -33,7 +34,7 @@ app.use("/api", loginController);
 
 if (process.env.NODE_ENV === "test") {
   const testingController = require("./controllers/testController");
-  app.use("/api/testing", testingController); 
+  app.use("/api/testing", testingController);
 }
 
 app.use(errorHandler);

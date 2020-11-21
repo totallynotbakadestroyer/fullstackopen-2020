@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const SingleUser = ({ user }) => {
   if (!user) {
@@ -12,7 +13,7 @@ const SingleUser = ({ user }) => {
       <ul>
         {user.blogs.map((blog) => (
           <li key={blog.id}>
-            <p>{blog.title}</p>
+            <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
           </li>
         ))}
       </ul>
