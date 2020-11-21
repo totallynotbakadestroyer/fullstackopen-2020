@@ -57,3 +57,12 @@
   margin-bottom: 10px;
 }
 
+.navigation{
+  background-color: lightgray;
+  padding: 10px;
+}
+
+.navigation *{
+  margin-right: 5px;
+}
+

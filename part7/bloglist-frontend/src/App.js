@@ -6,12 +6,13 @@ import Notification from "./components/Notification.js";
 import "./App.css";
 import { useDispatch, useSelector } from "react-redux";
 import { initBlogs } from "./reducers/blogsReducer.js";
-import { initAuth, logout } from "./reducers/authReducer.js";
-import { Redirect, Switch, Route, Link, useRouteMatch } from "react-router-dom";
+import { initAuth } from "./reducers/authReducer.js";
+import { Switch, Route, useRouteMatch } from "react-router-dom";
 import Users from "./components/Users.js";
 import SingleUser from "./components/SingleUser.js";
 import { initUsers } from "./reducers/usersReducer.js";
 import SingleBlog from "./components/SingleBlog.js";
+import Navigation from "./components/Navigation.js";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -46,11 +47,8 @@ const App = () => {
 
   return (
     <div>
-      <h2>blogs</h2>
-      <p>
-        {auth.name} logged in{" "}
-        <button onClick={() => dispatch(logout())}>logout</button>
-      </p>
+      <Navigation />
+      <h2>blog app</h2>
       <Switch>
         <Route path={"/blogs/:id"}>
           <SingleBlog blog={blog} />
