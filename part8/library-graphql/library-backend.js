@@ -3,7 +3,12 @@ const mongoose = require("mongoose");
 const Author = require("./models/AuthorSchema");
 const Book = require("./models/BookSchema");
 const User = require("./models/UserSchema");
-const { ApolloServer, gql, UserInputError, AuthenticationError } = require("apollo-server");
+const {
+  ApolloServer,
+  gql,
+  UserInputError,
+  AuthenticationError,
+} = require("apollo-server");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 
@@ -45,6 +50,7 @@ const typeDefs = gql`
     allBooks(author: String, genre: String): [Book!]!
     allAuthors: [Author!]
     me: User
+    allGenres: [String!]!
   }
   type Mutation {
     addBook(
@@ -88,6 +94,14 @@ const resolvers = {
     me: (root, args, context) => {
       return context.currentUser;
     },
+    allGenres: async () => {
+      const genres = await Book.find({}).select("genres");
+      return [
+        ...new Set([
+          ...genres.reduce((array, book) => array.concat(book.genres), []),
+        ]),
+      ];
+    },
   },
   Mutation: {
     login: async (root, args) => {
@@ -119,7 +133,7 @@ const resolvers = {
     },
     addBook: async (root, args, context) => {
       if (!context.currentUser) {
-        throw new AuthenticationError("not authenticated")
+        throw new AuthenticationError("not authenticated");
       }
       try {
         let author = await Author.findOne({ name: args.author });
@@ -132,7 +146,7 @@ const resolvers = {
           published: args.published,
           genres: args.genres,
         }).save();
-        console.log(book)
+        console.log(book);
         return book.populate("author");
       } catch (e) {
         throw new UserInputError(e.message, {
@@ -142,7 +156,7 @@ const resolvers = {
     },
     editAuthor: async (root, args, context) => {
       if (!context.currentUser) {
-        throw new AuthenticationError("not authenticated")
+        throw new AuthenticationError("not authenticated");
       }
       try {
         const author = await Author.findOne({ name: args.name });

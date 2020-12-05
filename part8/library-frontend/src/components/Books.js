@@ -1,39 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { useQuery } from "@apollo/client";
-import { ALL_BOOKS } from "../queries.js";
+import { useLazyQuery, useQuery } from "@apollo/client";
+import { ALL_GENRES, BOOKS_BY_GENRE } from "../queries.js";
 
 const Books = (props) => {
-  const books = useQuery(ALL_BOOKS, {
-    onCompleted: (data) => {
-      setGenres([
-        ...new Set([
-          ...data.allBooks.reduce(
-            (array, book) => array.concat(book.genres),
-            []
-          ),
-        ]),
-      ]);
-      console.log(genres);
-    },
-  });
+  const genres = useQuery(ALL_GENRES);
+
   const [filterGenre, setFilterGenre] = useState("");
-  const [genres, setGenres] = useState([]);
-  const [booksToShow, setBooksToShow] = useState([]);
 
-  useEffect(() => {
-    console.log("effect")
-    if (!books.loading) {
-      setBooksToShow(
-        filterGenre
-          ? books.data.allBooks.filter((book) =>
-              book.genres.some((genre) => genre === filterGenre)
-            )
-          : books.data.allBooks
-      );
-    }
-  }, [books, filterGenre]);
-
-  if (!props.show || books.loading) {
+  if (!props.show || genres.loading) {
     return null;
   }
 
@@ -47,22 +21,51 @@ const Books = (props) => {
         </p>
       ) : null}
 
-      <table>
-        <tbody>
-          <tr>
-            <th></th>
-            <th>author</th>
-            <th>published</th>
+      <BooksList filterGenre={filterGenre} />
+      <FilterButtons
+        genres={genres.data.allGenres}
+        setFilterGenre={setFilterGenre}
+      />
+    </div>
+  );
+};
+
+const BooksList = ({ filterGenre }) => {
+  const [getBooks, { loading, data }] = useLazyQuery(BOOKS_BY_GENRE, {
+    variables: { genre: filterGenre },
+  });
+
+  useEffect(() => {
+    getBooks();
+  }, [filterGenre, getBooks]);
+
+  if (loading || !data) {
+    return null;
+  }
+
+  return (
+    <table>
+      <tbody>
+        <tr>
+          <th></th>
+          <th>author</th>
+          <th>published</th>
+        </tr>
+        {data.allBooks.map((a) => (
+          <tr key={a.title}>
+            <td>{a.title}</td>
+            <td>{a.author.name}</td>
+            <td>{a.published}</td>
           </tr>
-          {booksToShow.map((a) => (
-            <tr key={a.title}>
-              <td>{a.title}</td>
-              <td>{a.author.name}</td>
-              <td>{a.published}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+        ))}
+      </tbody>
+    </table>
+  );
+};
+
+const FilterButtons = ({ genres, setFilterGenre }) => {
+  return (
+    <div>
       {genres.map((genre) => (
         <button onClick={() => setFilterGenre(genre)} key={genre}>
           {genre}

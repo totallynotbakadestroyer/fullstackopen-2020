@@ -44,10 +44,15 @@ const Authors = (props) => {
         <form onSubmit={changeBorn}>
           <h2>Set birthyear</h2>
           <div>
-            <label for="author">
+            <label htmlFor="author">
               name
-              <select defaultChecked={""} onChange={(event) => setName(event.target.value)}>
-                <option value="" selected disabled hidden>select name here</option>
+              <select
+                defaultValue={""}
+                onChange={(event) => setName(event.target.value)}
+              >
+                <option value="" disabled hidden>
+                  select name here
+                </option>
                 {authors.data.allAuthors.map((a, index) => {
                   return (
                     <option key={index} value={a.name}>
@@ -59,7 +64,7 @@ const Authors = (props) => {
             </label>
           </div>
           <div>
-            <label for="bornYear">
+            <label htmlFor="bornYear">
               born
               <input
                 onChange={(event) => setBorn(Number(event.target.value))}
