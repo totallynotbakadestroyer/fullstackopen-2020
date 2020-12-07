@@ -8,9 +8,12 @@ const {
   gql,
   UserInputError,
   AuthenticationError,
+  PubSub,
 } = require("apollo-server");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
+
+const pubsub = new PubSub();
 
 mongoose
   .connect(process.env.MONGOURI, {
@@ -51,6 +54,9 @@ const typeDefs = gql`
     allAuthors: [Author!]
     me: User
     allGenres: [String!]!
+  }
+  type Subscription {
+    bookAdded: Book!
   }
   type Mutation {
     addBook(
@@ -93,14 +99,6 @@ const resolvers = {
     allAuthors: async () => await Author.find({}),
     me: (root, args, context) => {
       return context.currentUser;
-    },
-    allGenres: async () => {
-      const genres = await Book.find({}).select("genres");
-      return [
-        ...new Set([
-          ...genres.reduce((array, book) => array.concat(book.genres), []),
-        ]),
-      ];
     },
   },
   Mutation: {
@@ -147,6 +145,7 @@ const resolvers = {
           genres: args.genres,
         }).save();
         console.log(book);
+        await pubsub.publish("BOOK_ADDED", { bookAdded: book });
         return book.populate("author");
       } catch (e) {
         throw new UserInputError(e.message, {
@@ -177,6 +176,11 @@ const resolvers = {
     bookCount: async (root) => {
       const author = await Author.find({ name: root.name });
       return Book.count({ author });
+    },
+  },
+  Subscription: {
+    bookAdded: {
+      subscribe: () => pubsub.asyncIterator(["BOOK_ADDED"]),
     },
   },
 };

@@ -1,4 +1,4 @@
-import { BOOKS_BY_GENRE, FAVORITE_GENRE } from "../queries.js";
+import { ALL_BOOKS, FAVORITE_GENRE } from "../queries.js";
 import { useQuery } from "@apollo/client";
 import React from "react";
 
@@ -26,7 +26,7 @@ const Recommendations = (props) => {
 };
 
 const RecommendationsList = (props) => {
-  const books = useQuery(BOOKS_BY_GENRE, {
+  const books = useQuery(ALL_BOOKS, {
     variables: { genre: props.favoriteGenre },
   });
 
