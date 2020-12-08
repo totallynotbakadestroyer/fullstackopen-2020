@@ -145,6 +145,8 @@ const resolvers = {
           genres: args.genres,
         }).save();
         console.log(book);
+        author.books = author.books.concat(book);
+        await author.save();
         await pubsub.publish("BOOK_ADDED", { bookAdded: book });
         return book.populate("author");
       } catch (e) {
@@ -170,12 +172,6 @@ const resolvers = {
           invalidArgs: args,
         });
       }
-    },
-  },
-  Author: {
-    bookCount: async (root) => {
-      const author = await Author.find({ name: root.name });
-      return Book.count({ author });
     },
   },
   Subscription: {
