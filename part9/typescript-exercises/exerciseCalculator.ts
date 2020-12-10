@@ -1,3 +1,5 @@
+import * as process from "process";
+
 interface Result {
   periodLength: number;
   trainingDays: number;
@@ -8,7 +10,25 @@ interface Result {
   average: number;
 }
 
-const exerciseCalculator = (hours: Array<number>, target: number): Result => {
+interface ExerciseData {
+  target: number;
+  hours: Array<number>;
+}
+
+const parseArguments = (args: Array<string>): ExerciseData => {
+  if (args.length < 4) throw new Error("Not enough arguments");
+
+  if (args.slice(2).every((x) => !isNaN(Number(x)))) {
+    return {
+      target: Number(args[2]),
+      hours: args.slice(3).map((x) => Number(x)),
+    };
+  } else {
+    throw new Error("Provided values were not numbers!");
+  }
+};
+
+const exerciseCalculator = (target: number, hours: Array<number>): Result => {
   const setRating = () => {
     const success = average >= target;
     if (success) {
@@ -39,4 +59,9 @@ const exerciseCalculator = (hours: Array<number>, target: number): Result => {
   };
 };
 
-console.log(exerciseCalculator([3, 0, 2, 4.5, 0, 3, 1], 2));
+try {
+  const { target, hours } = parseArguments(process.argv);
+  console.log(exerciseCalculator(target, hours));
+} catch (e) {
+  console.log("Error, something bad happened, message: ", e.message);
+}
