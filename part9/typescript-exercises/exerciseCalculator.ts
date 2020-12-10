@@ -28,7 +28,7 @@ const parseArguments = (args: Array<string>): ExerciseData => {
   }
 };
 
-const exerciseCalculator = (target: number, hours: Array<number>): Result => {
+export const exerciseCalculator = (target: number, hours: Array<number>): Result => {
   const setRating = () => {
     const success = average >= target;
     if (success) {
@@ -63,5 +63,6 @@ try {
   const { target, hours } = parseArguments(process.argv);
   console.log(exerciseCalculator(target, hours));
 } catch (e) {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
   console.log("Error, something bad happened, message: ", e.message);
 }

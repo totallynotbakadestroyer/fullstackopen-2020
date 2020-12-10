@@ -17,7 +17,7 @@ const parseArguments = (args: Array<string>): BodyInfo => {
   }
 };
 
-const calculateBmi = (height: number, weight: number): string => {
+export const calculateBmi = (height: number, weight: number): string => {
   const bmi = weight / (height / 100) ** 2;
   if (bmi < 15) {
     return "Very severely underweight";
@@ -36,11 +36,15 @@ const calculateBmi = (height: number, weight: number): string => {
   } else if (bmi >= 40) {
     return "Obese Class III (Very severely obese)";
   }
+  else {
+    throw new Error("Provided values were not numbers!");
+  }
 };
 
 try {
   const { height, weight } = parseArguments(process.argv);
   console.log(calculateBmi(height, weight));
 } catch (e) {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
   console.log("Error, something bad happened, message: ", e.message);
 }
