@@ -4,6 +4,7 @@ const cors = require("cors");
 import diagnosesRouter from "./routes/diagnoses";
 import patientsRouter from "./routes/patients";
 
+app.use(express.json());
 app.use(cors());
 
 app.get("/api/ping", (_req, res) => {
