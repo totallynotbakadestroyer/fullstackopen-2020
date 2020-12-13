@@ -1,4 +1,4 @@
-import {Gender, NewPatientEntry} from "./types";
+import { Entry, Gender, NewPatientEntry } from "./types";
 
 const isString = (param: any): param is string => {
   return typeof param === "string" || param instanceof String;
@@ -47,6 +47,13 @@ const parseOccupation = (occupation: any): string => {
   return occupation;
 };
 
+const parseEntries = (entries: Entry[]): Entry[] => {
+  if (!entries || !Array.isArray(entries)) {
+    throw new Error("Incorrect or wrong entries" + entries);
+  }
+  return entries;
+};
+
 const toNewPatientEntry = (object: any): NewPatientEntry => {
   return {
     name: parseName(object.name),
@@ -54,6 +61,7 @@ const toNewPatientEntry = (object: any): NewPatientEntry => {
     ssn: parseSsn(object.ssn),
     gender: parseGender(object.gender),
     occupation: parseOccupation(object.occupation),
+    entries: parseEntries(object.entries),
   };
 };
 

@@ -1,5 +1,5 @@
 import patientsData from "../../data/patients";
-import { NewPatientEntry, PatientEntry } from "../types";
+import { NewPatientEntry, PatientEntry, PublicPatient } from "../types";
 import { nanoid } from "nanoid/non-secure";
 
 const getEntries = () => {
@@ -15,7 +15,11 @@ const addPatient = (entry: NewPatientEntry): PatientEntry => {
   return newPatientEntry;
 };
 
-const getNonSensitiveEntries = (): Omit<PatientEntry, "ssn">[] => {
+const findPatient = (id: string): PatientEntry | undefined => {
+  return patientsData.find((patient) => patient.id === id);
+};
+
+const getNonSensitiveEntries = (): PublicPatient[] => {
   return patientsData.map(({ id, name, dateOfBirth, gender, occupation }) => ({
     id,
     name,
@@ -28,5 +32,6 @@ const getNonSensitiveEntries = (): Omit<PatientEntry, "ssn">[] => {
 export default {
   getEntries,
   getNonSensitiveEntries,
-  addPatient
+  addPatient,
+  findPatient,
 };
