@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { apiBaseUrl } from "../constants";
-import { Gender, Patient } from "../types";
+import { assertNever, Entry, Gender, Patient } from "../types";
 import { useParams } from "react-router-dom";
 import { addPatientFull, useStateValue } from "../state";
 import { Icon, SemanticICONS } from "semantic-ui-react";
+import HealthCheck from "../components/HealthCheck";
+import Hospital from "../components/HospitalEntry";
+import OccupationalHealthcare from "../components/OccupationalHealthcare";
 
 const SinglePatientInfo = () => {
   const { id } = useParams();
@@ -54,9 +57,28 @@ const SinglePatientInfo = () => {
         </h2>
         <p>ssn: {patient.ssn}</p>
         <p>occupation: {patient.occupation}</p>
+        <h2>entries</h2>
+        <div>
+          {patient.entries.map((entry) => (
+            <EntryDetails key={entry.id} entry={entry} />
+          ))}
+        </div>
       </div>
     </div>
   );
+};
+
+const EntryDetails: React.FC<{ entry: Entry }> = ({ entry }) => {
+  switch (entry.type) {
+    case "HealthCheck":
+      return <HealthCheck entry={entry} />;
+    case "Hospital":
+      return <Hospital entry={entry} />;
+    case "OccupationalHealthcare":
+      return <OccupationalHealthcare entry={entry} />;
+    default:
+      return assertNever(entry);
+  }
 };
 
 export default SinglePatientInfo;
