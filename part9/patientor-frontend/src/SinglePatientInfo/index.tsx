@@ -3,8 +3,8 @@ import axios from "axios";
 import { apiBaseUrl } from "../constants";
 import { Gender, Patient } from "../types";
 import { useParams } from "react-router-dom";
-import { useStateValue } from "../state";
-import { Icon } from "semantic-ui-react";
+import { addPatientFull, useStateValue } from "../state";
+import { Icon, SemanticICONS } from "semantic-ui-react";
 
 const SinglePatientInfo = () => {
   const { id } = useParams();
@@ -19,7 +19,7 @@ const SinglePatientInfo = () => {
       if (!patientInStore) {
         axios.get(`${apiBaseUrl}/patients/${id}`).then(({ data }) => {
           if (!data.error) {
-            dispatch({ type: "ADD_PATIENT_FULL", payload: data });
+            dispatch(addPatientFull(data));
             setPatient(data);
           }
         });
@@ -33,16 +33,16 @@ const SinglePatientInfo = () => {
     return null;
   }
 
-  const getGenderIcon = (gender: Gender): any => {
+  const getGenderIcon = (gender: Gender): SemanticICONS => {
     switch (gender) {
-      case "male":
+      case Gender.Male:
         return "mars";
-      case "female":
+      case Gender.Female:
         return "venus";
-      case "other":
-        return "neutral";
+      case Gender.Other:
+        return "neuter";
       default:
-        return null;
+        return "question circle";
     }
   };
 
