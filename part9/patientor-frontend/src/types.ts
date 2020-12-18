@@ -1,14 +1,12 @@
+type DistributiveOmit<T, K extends keyof any> = T extends any
+  ? Omit<T, K>
+  : never;
+
 export const assertNever = (value: never): never => {
   throw new Error(
     `Unhandled discriminated union member: ${JSON.stringify(value)}`
   );
 };
-
-export interface Diagnosis {
-  code: string;
-  name: string;
-  latin?: string;
-}
 
 export enum Gender {
   Male = "male",
@@ -34,9 +32,9 @@ interface Discharge {
 }
 
 export type Entry =
+  HealthCheckEntry
   | HospitalEntry
-  | OccupationalHealthcareEntry
-  | HealthCheckEntry;
+  | OccupationalHealthcareEntry;
 
 export interface DiagnoseEntry {
   code: string;
@@ -77,3 +75,5 @@ export interface HealthCheckEntry extends BaseEntry {
   type: "HealthCheck";
   healthCheckRating: HealthCheckRating;
 }
+
+export type NewEntry = DistributiveOmit<Entry, "id">;

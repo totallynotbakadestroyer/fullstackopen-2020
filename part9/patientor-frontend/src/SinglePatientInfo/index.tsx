@@ -1,15 +1,17 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { apiBaseUrl } from "../constants";
-import { assertNever, Entry, Gender, Patient } from "../types";
+import { assertNever, Entry, Gender, NewEntry, Patient } from "../types";
 import { useParams } from "react-router-dom";
 import { addPatientFull, useStateValue } from "../state";
-import { Icon, SemanticICONS } from "semantic-ui-react";
+import { Button, Icon, SemanticICONS } from "semantic-ui-react";
 import HealthCheck from "../components/HealthCheck";
 import Hospital from "../components/HospitalEntry";
 import OccupationalHealthcare from "../components/OccupationalHealthcare";
+import AddEntryModal from "../AddEntryModel";
 
 const SinglePatientInfo = () => {
+  const [modalOpen, setModalOpen] = React.useState<boolean>(false);
   const { id } = useParams();
   const [{ patientsFull }, dispatch] = useStateValue();
   const [patient, setPatient] = useState<Patient | null | undefined>(null);
@@ -35,6 +37,25 @@ const SinglePatientInfo = () => {
   if (!patient) {
     return null;
   }
+
+  const openModal = (): void => setModalOpen(true);
+
+  const closeModal = (): void => {
+    setModalOpen(false);
+  };
+
+  const submitNewEntry = async (values: NewEntry) => {
+    try {
+      const { data: updatedPatient } = await axios.post<Patient>(
+        `${apiBaseUrl}/patients/${id}/entries`,
+        values
+      );
+      dispatch(addPatientFull(updatedPatient));
+      closeModal();
+    } catch (e) {
+      console.error(e.response.data);
+    }
+  };
 
   const getGenderIcon = (gender: Gender): SemanticICONS => {
     switch (gender) {
@@ -63,7 +84,13 @@ const SinglePatientInfo = () => {
             <EntryDetails key={entry.id} entry={entry} />
           ))}
         </div>
+        <Button onClick={() => openModal()}>Add</Button>
       </div>
+      <AddEntryModal
+        modalOpen={modalOpen}
+        onClose={closeModal}
+        onSubmit={submitNewEntry}
+      />
     </div>
   );
 };
