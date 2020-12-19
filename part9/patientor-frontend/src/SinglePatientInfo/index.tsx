@@ -15,6 +15,7 @@ const SinglePatientInfo = () => {
   const { id } = useParams();
   const [{ patientsFull }, dispatch] = useStateValue();
   const [patient, setPatient] = useState<Patient | null | undefined>(null);
+  const [error, setError] = useState<string>("");
   useEffect(() => {
     const fetchPatient = () => {
       console.log("effect");
@@ -54,6 +55,7 @@ const SinglePatientInfo = () => {
       closeModal();
     } catch (e) {
       console.error(e.response.data);
+      setError(e.response.data.error);
     }
   };
 
@@ -87,6 +89,7 @@ const SinglePatientInfo = () => {
         <Button onClick={() => openModal()}>Add</Button>
       </div>
       <AddEntryModal
+        error={error}
         modalOpen={modalOpen}
         onClose={closeModal}
         onSubmit={submitNewEntry}
