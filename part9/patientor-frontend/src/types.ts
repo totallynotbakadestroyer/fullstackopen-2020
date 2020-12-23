@@ -31,8 +31,14 @@ interface Discharge {
   criteria: string;
 }
 
+export enum EntryType {
+  HealthCheck = "HealthCheck",
+  Hospital = "Hospital",
+  OccupationalHealthcare = "OccupationalHealthcare",
+}
+
 export type Entry =
-  HealthCheckEntry
+  | HealthCheckEntry
   | HospitalEntry
   | OccupationalHealthcareEntry;
 
@@ -52,7 +58,7 @@ export interface Patient {
   entries: Entry[];
 }
 
-interface BaseEntry {
+export interface BaseEntry {
   id: string;
   description: string;
   date: string;
@@ -61,19 +67,24 @@ interface BaseEntry {
 }
 
 export interface HospitalEntry extends BaseEntry {
-  type: "Hospital";
+  type: EntryType.Hospital;
   discharge: Discharge;
 }
 
 export interface OccupationalHealthcareEntry extends BaseEntry {
-  type: "OccupationalHealthcare";
+  type: EntryType.OccupationalHealthcare;
   employerName: string;
   sickLeave?: SickLeave;
 }
 
 export interface HealthCheckEntry extends BaseEntry {
-  type: "HealthCheck";
+  type: EntryType.HealthCheck;
   healthCheckRating: HealthCheckRating;
 }
 
-export type NewEntry = DistributiveOmit<Entry, "id">;
+export type FormNewEntry =
+  & HealthCheckEntry
+  & HospitalEntry
+  & OccupationalHealthcareEntry;
+
+export type NewEntry = DistributiveOmit<FormNewEntry, "id">;

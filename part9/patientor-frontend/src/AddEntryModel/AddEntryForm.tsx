@@ -3,16 +3,24 @@ import { useStateValue } from "../state";
 import { Formik, Form, Field } from "formik";
 import {
   DiagnosisSelection,
-  NumberField,
+  Option,
+  SelectField,
   TextField,
 } from "../AddPatientModal/FormField";
-import { HealthCheckRating, NewEntry } from "../types";
+import { EntryType, NewEntry } from "../types";
 import { Button, Grid } from "semantic-ui-react";
+import EntryTypeFields from "./ConditionalFields";
 
 interface Props {
   onSubmit: (values: NewEntry) => void;
   onCancel: () => void;
 }
+
+const entryOptions: Option[] = [
+  { value: EntryType.Hospital, label: "Hospital" },
+  { value: EntryType.HealthCheck, label: "Health Check" },
+  { value: EntryType.OccupationalHealthcare, label: "Occupational Healthcare" },
+];
 
 const AddEntryForm: React.FC<Props> = ({ onSubmit, onCancel }) => {
   const [{ diagnoses }] = useStateValue();
@@ -20,12 +28,21 @@ const AddEntryForm: React.FC<Props> = ({ onSubmit, onCancel }) => {
   return (
     <Formik
       initialValues={{
-        type: "HealthCheck",
+        type: EntryType.Hospital as never,
         description: "",
         date: "",
         specialist: "",
         diagnosisCodes: [],
-        healthCheckRating: HealthCheckRating.Healthy,
+        employerName: "",
+        discharge: {
+          date: "",
+          criteria: "",
+        },
+        sickLeave: {
+          startDate: "",
+          endDate: "",
+        },
+        healthCheckRating: 0,
       }}
       onSubmit={onSubmit}
       validate={(values) => {
@@ -46,7 +63,7 @@ const AddEntryForm: React.FC<Props> = ({ onSubmit, onCancel }) => {
         return errors;
       }}
     >
-      {({ isValid, dirty, setFieldValue, setFieldTouched }) => {
+      {({ isValid, dirty, setFieldValue, setFieldTouched, values }) => {
         return (
           <Form className="form ui">
             <Field
@@ -72,13 +89,8 @@ const AddEntryForm: React.FC<Props> = ({ onSubmit, onCancel }) => {
               setFieldTouched={setFieldTouched}
               diagnoses={Object.values(diagnoses)}
             />
-            <Field
-              label="healthCheckRating"
-              name="healthCheckRating"
-              component={NumberField}
-              min={0}
-              max={3}
-            />
+            <SelectField name={"type"} label={"Type"} options={entryOptions} />
+            <EntryTypeFields entryType={values.type} />
             <Grid>
               <Grid.Column floated="left" width={5}>
                 <Button type="button" onClick={onCancel} color="red">

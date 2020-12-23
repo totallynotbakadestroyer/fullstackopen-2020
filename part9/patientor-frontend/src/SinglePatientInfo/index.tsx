@@ -1,7 +1,14 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { apiBaseUrl } from "../constants";
-import { assertNever, Entry, Gender, NewEntry, Patient } from "../types";
+import {
+  assertNever,
+  Entry,
+  EntryType,
+  Gender,
+  NewEntry,
+  Patient,
+} from "../types";
 import { useParams } from "react-router-dom";
 import { addPatientFull, useStateValue } from "../state";
 import { Button, Icon, SemanticICONS } from "semantic-ui-react";
@@ -100,11 +107,11 @@ const SinglePatientInfo = () => {
 
 const EntryDetails: React.FC<{ entry: Entry }> = ({ entry }) => {
   switch (entry.type) {
-    case "HealthCheck":
+    case EntryType.HealthCheck:
       return <HealthCheck entry={entry} />;
-    case "Hospital":
+    case EntryType.Hospital:
       return <Hospital entry={entry} />;
-    case "OccupationalHealthcare":
+    case EntryType.OccupationalHealthcare:
       return <OccupationalHealthcare entry={entry} />;
     default:
       return assertNever(entry);
