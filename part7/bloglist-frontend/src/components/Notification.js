@@ -7,7 +7,7 @@ const Notification = () => {
   if (notification === null) {
     return null;
   }
-  return <Alert color={notification.type}>{notification.message}</Alert>;
+  return <Alert severity={notification.type}>{notification.content}</Alert>;
 };
 
 export default Notification;

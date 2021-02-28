@@ -3,7 +3,7 @@ const notificationReducer = (state = null, action) => {
     case "NEW_NOTIFICATION":
       return { ...action.data };
     case "DELETE_NOTIFICATION":
-      return {};
+      return null;
     default:
       return state;
   }

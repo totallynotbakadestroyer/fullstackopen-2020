@@ -1,16 +1,30 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { createBlog } from "../reducers/blogsReducer.js";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  TextField,
+} from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
+
+const useStyles = makeStyles(() => ({
+  textField: {
+    marginBottom: 15,
+  },
+}));
 
 const BlogForm = () => {
   const [visible, setVisible] = useState(false);
-  const hideWhenVisible = { display: visible ? "none" : "" };
-  const showWhenVisible = { display: visible ? "" : "none" };
   const [author, setBlogAuthor] = useState("");
   const [title, setBlogTitle] = useState("");
   const [url, setBlogUrl] = useState("");
 
   const dispatch = useDispatch();
+  const classes = useStyles();
 
   const createNew = (event) => {
     event.preventDefault();
@@ -23,66 +37,66 @@ const BlogForm = () => {
 
   return (
     <div>
-      <div style={hideWhenVisible}>
-        <button
+      <div>
+        <Button
+          variant={"outlined"}
+          style={{ marginBottom: 15 }}
           className="toggleVisible"
-          type="button"
           onClick={() => setVisible(true)}
         >
           new blog
-        </button>
+        </Button>
       </div>
-      <div className="toggleableContent" style={showWhenVisible}>
-        <h1>create new</h1>
+      <Dialog fullWidth onClose={() => setVisible(false)} open={visible}>
+        <DialogTitle>create new</DialogTitle>
         <form onSubmit={createNew}>
-          <div>
-            <label htmlFor="title">
-              title
-              <input
-                onChange={({ target }) => setBlogTitle(target.value)}
-                value={title}
-                type="text"
-                name="title"
-                id="title"
-              />
-            </label>
-          </div>
-          <div>
-            <label htmlFor="author">
-              author
-              <input
-                value={author}
-                onChange={({ target }) => setBlogAuthor(target.value)}
-                type="text"
-                name="author"
-                id="author"
-              />
-            </label>
-          </div>
-          <div>
-            <label htmlFor="url">
-              url
-              <input
-                onChange={({ target }) => setBlogUrl(target.value)}
-                value={url}
-                type="text"
-                name="url"
-                id="url"
-              />
-            </label>
-          </div>
-          <div>
-            <button type="submit">add new</button>
-          </div>
+          <DialogContent>
+            <TextField
+              onChange={({ target }) => setBlogTitle(target.value)}
+              value={title}
+              type="text"
+              name="title"
+              label={"Title"}
+              id="title"
+              className={classes.textField}
+              fullWidth
+            />
+            <TextField
+              value={author}
+              onChange={({ target }) => setBlogAuthor(target.value)}
+              type="text"
+              name="author"
+              id="author"
+              label={"Author"}
+              className={classes.textField}
+              fullWidth
+            />
+            <TextField
+              onChange={({ target }) => setBlogUrl(target.value)}
+              value={url}
+              type="text"
+              name="url"
+              id="url"
+              label={"URL"}
+              className={classes.textField}
+              fullWidth
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button
+              size={"small"}
+              className="closeVisible"
+              type="button"
+              onClick={() => setVisible(false)}
+            >
+              close
+            </Button>
+            <Button size={"small"} type="submit">
+              add new
+            </Button>
+          </DialogActions>
         </form>
-        <button
-          className="closeVisible"
-          type="button"
-          onClick={() => setVisible(false)}
-        >
-          close
-        </button>
-      </div>
+      </Dialog>
     </div>
   );
 };
